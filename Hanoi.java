@@ -47,7 +47,7 @@ public class Hanoi {
 			stack_a[i] = TOWER_HEIGHT - i;
 		}
 		
-		System.out.println("The starting position is given as:");
+		System.out.println("\nThe starting position is given as:\n");
 		printStacks();
 		
 		towerSolve(TOWER_HEIGHT, stack_a, stack_b, stack_c);
@@ -66,7 +66,7 @@ public class Hanoi {
 			System.out.println();
 			push(dest, pop(origin));
 			
-			System.out.println("Moving disk from " + stack_map.get(origin.hashCode()) + " to " + stack_map.get(dest.hashCode()));
+			System.out.println("Moving disk from " + stack_map.get(origin.hashCode()) + " to " + stack_map.get(dest.hashCode()) + "\n");
 			
 			counter += 1;
 			
