@@ -10,57 +10,86 @@ public class Hanoi {
 	// Initialize TOWER_HEIGHT to a default value in case it's not user-specified
 	private static int TOWER_HEIGHT = 3;
 	
-	private static int stack_a[];
-	private static int stack_b[];
-	private static int stack_c[];
+	private static Integer stack_a[];
+	private static Integer stack_b[];
+	private static Integer stack_c[];
+	
+	static private String direction = "AC";
 	
 	private static HashMap<Integer, String> stack_map = new HashMap<Integer, String>();
+	private static HashMap<String, Integer[]> start_map = new HashMap<String, Integer[]>();
+	private static HashMap<String, Integer[]> dest_map = new HashMap<String, Integer[]>();
+	private static HashMap<String, Integer[]> temp_map = new HashMap<String, Integer[]>();
 	
 	private static int counter = 0;
 	
 	public static void main (String args[]){
 		
-		if (args.length > 2 || args.length == 1) {
+		// Check if the usage is correct and if not print usage message
+		if (args.length % 2 == 1) {
 			usageMessage();
 		}
-		else if (args.length == 2 && (!args[0].equals("-n"))) {
+		else if (args.length > 0) {
+			for(int i = 0; i < args.length; i += 2) {
+				switch (args[i].charAt(1)) {
+					case 'n':
+						try {
+							TOWER_HEIGHT = Integer.parseInt(args[i + 1]);
+						}
+						catch (Exception e) {
+							usageMessage();
+						}
+						break;
+					case 'm':
+						direction = args[i + 1].toUpperCase();
+						break;
+					default:
+						usageMessage();
+				}
+			}
+		}	//end check on usage	
+		
+		createStacksAndMaps();
+		
+		// a last check regarding usage
+		if(!start_map.containsKey(direction)) {
 			usageMessage();
-		}
-		else if (args.length == 2){
-			try {
-				TOWER_HEIGHT = Integer.parseInt(args[1]);
-			}
-			catch (Exception e) {
-				usageMessage();
-			}
-		}
+		}	
 		
-		stack_a = new int[TOWER_HEIGHT];
-		stack_b = new int[TOWER_HEIGHT];
-		stack_c = new int[TOWER_HEIGHT];
+		// Let's see how long this takes?
+		long start = System.currentTimeMillis();
 		
-		stack_map.put(stack_a.hashCode(), "stack A");
-		stack_map.put(stack_b.hashCode(), "stack B");
-		stack_map.put(stack_c.hashCode(), "stack C");
-		
-		for (int i = 0; i < stack_a.length; i++) {
-			stack_a[i] = TOWER_HEIGHT - i;
+		for (int i = 0; i < start_map.get(direction).length; i++) {
+			start_map.get(direction)[i] = TOWER_HEIGHT - i;
 		}
 		
 		System.out.println("\nThe starting position is given as:\n");
 		printStacks();
 		
-		towerSolve(TOWER_HEIGHT, stack_a, stack_b, stack_c);
+		// At long last!  One who knows the ways of the Tower!
+		towerSolve(TOWER_HEIGHT, start_map.get(direction), dest_map.get(direction), temp_map.get(direction));
+		
 		System.out.println("Moved " + TOWER_HEIGHT + " disks in " + counter + " moves!");
+		System.out.println("Completed in: " + ((double) ((System.currentTimeMillis() - start)) / 1000) + " seconds");
 	}
 	
 	private static void usageMessage() {
-		System.out.println("Usage: \n\t\t java " + klass + " [-n DISKS]" + "\n\n");
-		System.out.println("If specified, Hanoi will run with the given number of DISKS from option -n");
+		System.out.println("Usage: \n\t\t java " + klass + " [-n DISKS] " + "[-m DIRECTION]" + "\n\n");
+		
+		System.out.println("Options:\n");
+		System.out.println("-n\tIf specified, Hanoi will run with the given number");
+		System.out.println("\t" + "of DISKS from option -n. Hanoi defaults to running with 3 disks.\n");
+		
+		System.out.println("-m" + "\t" + "If specified, Hanoi will run with DIRECTION from option ");
+		System.out.println("\t" + "-n where DIRECTION is given as a two letter permutation of the ");
+		System.out.println("\t" + "members of set S were S = {A, B, C} - the first letter is the");
+		System.out.println("\t" + "starting stack and the second is the destination stack.");
+		System.out.println("\tHanoi defaults to running with DIRECTION = AC\n\n");
+		System.out.println("Example:\tjava Hanoi -n 8 -m BC");
 		System.exit(1);
 	}
 
-	public static void towerSolve(int n, int[] origin, int[] dest, int[] temp) {
+	public static void towerSolve(int n, Integer[] origin, Integer[] dest, Integer[] temp) {
 		if (n == 1) 
 		{
 			System.out.println();
@@ -69,7 +98,6 @@ public class Hanoi {
 			System.out.println("Moving disk from " + stack_map.get(origin.hashCode()) + " to " + stack_map.get(dest.hashCode()) + "\n");
 			
 			counter += 1;
-			
 			printStacks();
 		}
 		else 
@@ -80,28 +108,28 @@ public class Hanoi {
 		}
 	}
 	
-	public static void push(int[] n, int val) {
+	public static void push(Integer[] n, int val) {
 		for(int i = 0; i < n.length; i++) {
-			if(n[i] == 0) {
-				n[i] = val;
+			if(n[i] == null) {
+				n[i] = new Integer(val);
 				return;
 			}
 		}
 	}
 	
-	public static int pop(int[] n) {
+	public static int pop(Integer[] n) {
 		for(int i = n.length - 1; i >= 0; i--) {
-			if (n[i] != 0) {
+			if (n[i] != null) {
 				int temp = n[i];
-				n[i] = 0;
+				n[i] = null;
 				return temp;
 			}
 		}
 		return -1;		
 	}
 	
-	public static String diskToString(int n) {
-		String ans = (n == 0) ? " " : String.valueOf(n);
+	public static String diskToString(Integer n) {
+		String ans = (n == null) ? " " : String.valueOf(n);
 		return ans;
 	}
 	
@@ -110,5 +138,36 @@ public class Hanoi {
 			System.out.println("\t\t" + diskToString(stack_a[i]) + "\t\t" + diskToString(stack_b[i]) + "\t\t" + diskToString(stack_c[i]));
 		}
 		System.out.println("\n-----------Stack A-----------Stack B-----------Stack C-----------\n");
+	}
+	
+	public static void createStacksAndMaps() {
+		stack_a = new Integer[TOWER_HEIGHT];
+		stack_b = new Integer[TOWER_HEIGHT];
+		stack_c = new Integer[TOWER_HEIGHT];
+		
+		stack_map.put(stack_a.hashCode(), "stack A");
+		stack_map.put(stack_b.hashCode(), "stack B");
+		stack_map.put(stack_c.hashCode(), "stack C");
+		
+		start_map.put("AB", stack_a);
+		start_map.put("AC", stack_a);
+		start_map.put("BA", stack_b);
+		start_map.put("BC", stack_b);
+		start_map.put("CA", stack_c);
+		start_map.put("CB", stack_c);
+		
+		dest_map.put("AB", stack_b);
+		dest_map.put("AC", stack_c);
+		dest_map.put("BA", stack_a);
+		dest_map.put("BC", stack_c);
+		dest_map.put("CA", stack_a);
+		dest_map.put("CB", stack_b);
+		
+		temp_map.put("AB", stack_c);
+		temp_map.put("AC", stack_b);
+		temp_map.put("BA", stack_c);
+		temp_map.put("BC", stack_a);
+		temp_map.put("CA", stack_b);
+		temp_map.put("CB", stack_a);
 	}
 }
