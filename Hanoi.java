@@ -1,6 +1,5 @@
 // Author: Karim Reghay
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class Hanoi {
@@ -48,9 +47,9 @@ public class Hanoi {
 			stack_a[i] = TOWER_HEIGHT - i;
 		}
 		
-		System.out.println(Arrays.toString(stack_a));
-		System.out.println(Arrays.toString(stack_b));
-		System.out.println(Arrays.toString(stack_c));
+		System.out.println("The starting position is given as:");
+		printStacks();
+		
 		towerSolve(TOWER_HEIGHT, stack_a, stack_b, stack_c);
 		System.out.println("Moved " + TOWER_HEIGHT + " disks in " + counter + " moves!");
 	}
@@ -71,10 +70,7 @@ public class Hanoi {
 			
 			counter += 1;
 			
-			System.out.println(Arrays.toString(stack_a));
-			System.out.println(Arrays.toString(stack_b));
-			System.out.println(Arrays.toString(stack_c));
-			System.out.println();
+			printStacks();
 		}
 		else 
 		{
@@ -102,5 +98,17 @@ public class Hanoi {
 			}
 		}
 		return -1;		
+	}
+	
+	public static String diskToString(int n) {
+		String ans = (n == 0) ? " " : String.valueOf(n);
+		return ans;
+	}
+	
+	public static void printStacks() {
+		for(int i = TOWER_HEIGHT - 1; i >= 0; i--) {
+			System.out.println("\t\t" + diskToString(stack_a[i]) + "\t\t" + diskToString(stack_b[i]) + "\t\t" + diskToString(stack_c[i]));
+		}
+		System.out.println("\n-----------Stack A-----------Stack B-----------Stack C-----------\n");
 	}
 }
