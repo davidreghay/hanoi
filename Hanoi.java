@@ -3,25 +3,61 @@
 import java.util.Arrays;
 public class Hanoi {
 	
-	public static final int TOWER_HEIGHT = 5;
+	public static String klass = new Hanoi().getClass().getSimpleName();
 	
-	static int m[] = {5, 4, 3, 2, 1};
-	static int p[] = new int[TOWER_HEIGHT];
-	static int q[] = new int[TOWER_HEIGHT];
+	public static int TOWER_HEIGHT = 3;
+	
+	static int m[];
+	static int p[];
+	static int q[];
+	
+	static int counter = 0;
 	
 	public static void main (String args[]){
+		if (args.length > 2 || args.length == 1) {
+			usageMessage();
+		}
+		else if (args.length == 2 && (!args[0].equals("-n"))) {
+			usageMessage();
+		}
+		else if (args.length == 2){
+			try {
+				TOWER_HEIGHT = Integer.parseInt(args[1]);
+			}
+			catch (Exception e) {
+				usageMessage();
+			}
+		}
+		
+		m = new int[TOWER_HEIGHT];
+		p = new int[TOWER_HEIGHT];
+		q = new int[TOWER_HEIGHT];
+
+		for (int i = 0; i < m.length; i++) {
+			m[i] = TOWER_HEIGHT - i;
+		}
+		
 		System.out.println(Arrays.toString(m));
 		System.out.println(Arrays.toString(p));
 		System.out.println(Arrays.toString(q));
-		towerSolve(5, m, p, q);
-		
+		towerSolve(TOWER_HEIGHT, m, p, q);
+		System.out.println("Moved " + TOWER_HEIGHT + " disks in " + counter + " moves!");
 	}
 	
+	private static void usageMessage() {
+		System.out.println("Usage: \n\t\t java " + "[-n DISKS] " + klass + "\n\n");
+		System.out.println("If specified, Hanoi will run with the given number of DISKS from option -n");
+		System.exit(1);
+	}
+
 	public static void towerSolve(int n, int[] origin, int[] dest, int[] temp) {
 		if (n == 1) 
 		{
 			System.out.println();
 			push(dest, pop(origin));
+			
+			counter += 1;
+			
 			System.out.println(Arrays.toString(m));
 			System.out.println(Arrays.toString(p));
 			System.out.println(Arrays.toString(q));
