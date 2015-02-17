@@ -1,19 +1,26 @@
 // Author: Karim Reghay
 
 import java.util.Arrays;
+import java.util.HashMap;
+
 public class Hanoi {
 	
-	public static String klass = new Hanoi().getClass().getSimpleName();
+	// Set klass to whatever the class name is (for usage message)
+	private static String klass = new Hanoi().getClass().getSimpleName();
 	
-	public static int TOWER_HEIGHT = 3;
+	// Initialize TOWER_HEIGHT to a default value in case it's not user-specified
+	private static int TOWER_HEIGHT = 3;
 	
-	static int m[];
-	static int p[];
-	static int q[];
+	private static int stack_a[];
+	private static int stack_b[];
+	private static int stack_c[];
 	
-	static int counter = 0;
+	private static HashMap<Integer, String> stack_map = new HashMap<Integer, String>();
+	
+	private static int counter = 0;
 	
 	public static void main (String args[]){
+		
 		if (args.length > 2 || args.length == 1) {
 			usageMessage();
 		}
@@ -29,18 +36,22 @@ public class Hanoi {
 			}
 		}
 		
-		m = new int[TOWER_HEIGHT];
-		p = new int[TOWER_HEIGHT];
-		q = new int[TOWER_HEIGHT];
-
-		for (int i = 0; i < m.length; i++) {
-			m[i] = TOWER_HEIGHT - i;
+		stack_a = new int[TOWER_HEIGHT];
+		stack_b = new int[TOWER_HEIGHT];
+		stack_c = new int[TOWER_HEIGHT];
+		
+		stack_map.put(stack_a.hashCode(), "stack A");
+		stack_map.put(stack_b.hashCode(), "stack B");
+		stack_map.put(stack_c.hashCode(), "stack C");
+		
+		for (int i = 0; i < stack_a.length; i++) {
+			stack_a[i] = TOWER_HEIGHT - i;
 		}
 		
-		System.out.println(Arrays.toString(m));
-		System.out.println(Arrays.toString(p));
-		System.out.println(Arrays.toString(q));
-		towerSolve(TOWER_HEIGHT, m, p, q);
+		System.out.println(Arrays.toString(stack_a));
+		System.out.println(Arrays.toString(stack_b));
+		System.out.println(Arrays.toString(stack_c));
+		towerSolve(TOWER_HEIGHT, stack_a, stack_b, stack_c);
 		System.out.println("Moved " + TOWER_HEIGHT + " disks in " + counter + " moves!");
 	}
 	
@@ -56,11 +67,13 @@ public class Hanoi {
 			System.out.println();
 			push(dest, pop(origin));
 			
+			System.out.println("Moving disk from " + stack_map.get(origin.hashCode()) + " to " + stack_map.get(dest.hashCode()));
+			
 			counter += 1;
 			
-			System.out.println(Arrays.toString(m));
-			System.out.println(Arrays.toString(p));
-			System.out.println(Arrays.toString(q));
+			System.out.println(Arrays.toString(stack_a));
+			System.out.println(Arrays.toString(stack_b));
+			System.out.println(Arrays.toString(stack_c));
 			System.out.println();
 		}
 		else 
