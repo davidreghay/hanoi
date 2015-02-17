@@ -45,7 +45,7 @@ public class Hanoi {
 	}
 	
 	private static void usageMessage() {
-		System.out.println("Usage: \n\t\t java " + "[-n DISKS] " + klass + "\n\n");
+		System.out.println("Usage: \n\t\t java " + klass + " [-n DISKS]" + "\n\n");
 		System.out.println("If specified, Hanoi will run with the given number of DISKS from option -n");
 		System.exit(1);
 	}
